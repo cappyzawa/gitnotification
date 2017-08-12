@@ -26,7 +26,7 @@ module.exports = (robot) ->
     return message
 
   postIssueComment = (data) ->
-    action = data.action()
+    action = data.action
     issue_comment = data.comment
     switch action
       when 'created'
