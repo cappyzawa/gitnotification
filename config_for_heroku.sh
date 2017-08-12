@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 export HUBOT_SLACK_TOKEN='xoxb-225226567635-gHcjqYDR0WVu5jTIahNIy2UB'
 export HEROKU_URL='https://kutsuzawa-inc.herokuapp.com'
 export HUBOT_SLACK_TEAM='kutsuzawa.inc'
