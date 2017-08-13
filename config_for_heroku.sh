@@ -7,3 +7,5 @@ heroku config:set HUBOT_HEROKU_WAKEUP_TIME=9:00
 heroku config:set HUBOT_HEROKU_SLEEP_TIME=1:00
 heroku config:set TZ='Asia/Tokyo'
 heroku config:set HUBOT_HEROKU_KEEPALIVE_URL=$(heroku apps:info -s | grep web_url | cut -d= -f2)
+heroku config:set shu92021='zawamaru'
+heroku config:set ryo2851='kutsuzawa2851'
