@@ -15,14 +15,22 @@ module.exports = (robot) ->
   postIssue = (data) ->
     action = data.action
     issue = data.issue
-    slackUser = eval("process.env.#{issue.user.login}")
     switch action
       when 'opend'
+        slackUser = eval("process.env.#{issue.user.login}")
         message = "#{issue.title} #{issue.number} が@#{slackUser}により <#{issue.html_url}|作成>されました"
       when 'closed'
+        slackUser = eval("process.env.#{issue.user.login}")
         message = "#{issue.title} #{issue.number} が@#{slackUser}により <#{issue.html_url}|終了>されました"
       when 'reopened'
+        slackUser = eval("process.env.#{issue.user.login}")
         message = "#{issue.title} #{issue.number} が@#{slackUser}により <#{issue.html_url}|再開>されました"
+      when 'assigned'
+        slackUser = eval("process.env.#{issue.assignee.login}")
+        message = "@#{slackUser} <#{issue.html_url}|#{issue.title} #{issue.number}>の担当になりました"
+      when 'unassigned'
+        slackUser = eval("process.env.#{issue.assignee.login}")
+        message = "@#{slackUser} <#{issue.html_url}|#{issue.title} #{issue.number}>の担当ではなくなりました"
     return message
 
   postIssueComment = (data) ->
