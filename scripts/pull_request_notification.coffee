@@ -6,10 +6,10 @@ module.exports = (robot) ->
     switch event_type
       when 'pull_request'
         message = postPullRequest data
-      when 'pull_request_review'
-        message = postPullRequestReview data
       when 'pull_request_review_comment'
         message = postPullRequestReviewComment data
+      else
+        message = ""
 
     robot.send {room: "#pullrequests"}, message
     res.end ""
@@ -31,6 +31,9 @@ module.exports = (robot) ->
       when 'review_request_removed'
         slackUser = eval("process.env.#{reviewer.login}")
         message = "@#{slackUser} <#{pullRequest.html_url}|#{pullRequest.title} ##{pullRequest.number}>のレビューが取り消されました"
+      else
+        message = ""
+
     return message
 
   postPullRequestReviewComment = (data) ->
@@ -43,7 +46,6 @@ module.exports = (robot) ->
         targetSlackUser = eval("process.env.#{assignee.login}")
         sourceSlackUser = eval("process.env.#{comment.user.login}")
         message = "@#{targetSlackUser} #{comment.body} in <#{pullRequest.html_url}|#{pullRequest.title} ##{pullRequest.number}> by #{sourceSlackUser}"
+      else
+        message = ""
     return message
-
-  postPullRequestReview = (data) ->
-    return data.action
