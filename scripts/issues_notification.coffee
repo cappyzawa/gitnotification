@@ -8,6 +8,8 @@ module.exports = (robot) ->
         message = postIssue data
       when 'issue_comment'
         message = postIssueComment data
+      else
+        message = ""
 
     robot.send {room: "#issues"}, message
     res.end ""
@@ -15,23 +17,36 @@ module.exports = (robot) ->
   postIssue = (data) ->
     action = data.action
     issue = data.issue
-    slackUser = eval("process.env.#{issue.user.login}")
+    assignee = data.assignee
     switch action
-      when 'opend'
-        message = "#{issue.title} #{issue.number} が@#{slackUser}により <#{issue.html_url}|作成>されました"
+      when 'opened'
+        slackUser = eval("process.env.#{issue.user.login}")
+        message = "#{slackUser}さんが <#{issue.html_url}|#{issue.title} \##{issue.number}>を作成しました"
       when 'closed'
-        message = "#{issue.title} #{issue.number} が@#{slackUser}により <#{issue.html_url}|終了>されました"
+        slackUser = eval("process.env.#{issue.user.login}")
+        message = "#{slackUser}さんが <#{issue.html_url}|#{issue.title} \##{issue.number}>を終了しました"
       when 'reopened'
-        message = "#{issue.title} #{issue.number} が@#{slackUser}により <#{issue.html_url}|再開>されました"
+        slackUser = eval("process.env.#{issue.user.login}")
+        message = "#{slackUser}さんが <#{issue.html_url}|#{issue.title} \##{issue.number}>を再開しました"
+      when 'assigned'
+        slackUser = eval("process.env.#{assignee.login}")
+        message = "@#{slackUser} <#{issue.html_url}|#{issue.title} #{issue.number}>の担当になりました"
+      when 'unassigned'
+        slackUser = eval("process.env.#{assignee.login}")
+        message = "@#{slackUser} <#{issue.html_url}|#{issue.title} \##{issue.number}>の担当ではなくなりました"
+      else
+        message = ""
     return message
 
   postIssueComment = (data) ->
     action = data.action
     issue_comment = data.comment
-    slackUser = eval("process.env.#{issue_comment.user.login}")
+    assignee = data.issue.assignee
+    targetSlackUser = eval("process.env.#{assignee.login}")
+    sourceSlackUser = eval("process.env.#{issue_comment.user.login}")
     switch action
       when 'created'
-        message = "@#{slackUser}さんが #{issue_comment.body}って言ってますよ"
-      when 'deleted'
-        message = "@#{slackUser}さんが #{issue_comment.body}を取り消したよ"
+        message = "@#{targetSlackUser} #{issue_comment.body} by #{sourceSlackUser}"
+      else
+        message = ""
     return message
