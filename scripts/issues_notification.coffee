@@ -8,6 +8,8 @@ module.exports = (robot) ->
         message = postIssue data
       when 'issue_comment'
         message = postIssueComment data
+      else
+        message = ""
 
     robot.send {room: "#issues"}, message
     res.end ""
@@ -32,6 +34,8 @@ module.exports = (robot) ->
       when 'unassigned'
         slackUser = eval("process.env.#{assignee.login}")
         message = "@#{slackUser} <#{issue.html_url}|#{issue.title} \##{issue.number}>の担当ではなくなりました"
+      else
+        message = ""
     return message
 
   postIssueComment = (data) ->
@@ -43,4 +47,6 @@ module.exports = (robot) ->
         message = "@#{slackUser}さんが #{issue_comment.body}って言ってますよ"
       when 'deleted'
         message = "@#{slackUser}さんが #{issue_comment.body}を取り消したよ"
+      else
+        message = ""
     return message
