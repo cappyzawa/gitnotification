@@ -18,11 +18,11 @@ module.exports = (robot) ->
     issue = data.issue
     switch action
       when 'opend'
-        message = "#{issue.title} #{issue.number} が#{issue.user.login}により<作成|#{issue.html_url}>されました"
+        message = "#{issue.title} #{issue.number} が#{issue.user.login}により <作成|#{issue.html_url}>されました"
       when 'closed'
-        message = "#{issue.title} #{issue.number} が#{issue.user.login}により<終了|#{issue.html_url}>されました"
+        message = "#{issue.title} #{issue.number} が#{issue.user.login}により <終了|#{issue.html_url}>されました"
       when 'reopend'
-        message = "#{issue.title} #{issue.number} が#{issue.user.login}により<再開|#{issue.html_url}>されました"
+        message = "#{issue.title} #{issue.number} が#{issue.user.login}により <再開|#{issue.html_url}>されました"
     return message
 
   postIssueComment = (data) ->
@@ -30,7 +30,7 @@ module.exports = (robot) ->
     issue_comment = data.comment
     switch action
       when 'created'
-        message = "#{issue_comment.user.login}さんが#{issue_comment.body}って言ってますよ"
+        message = " #{issue_comment.user.login}さんが #{issue_comment.body}って言ってますよ"
       when 'deleted'
-        message = "#{issue_comment.user.login}さんが#{issue_comment.body}を取り消したよ"
+        message = " #{issue_comment.user.login}さんが #{issue_comment.body}を取り消したよ"
     return message
