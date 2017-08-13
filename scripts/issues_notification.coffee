@@ -41,12 +41,12 @@ module.exports = (robot) ->
   postIssueComment = (data) ->
     action = data.action
     issue_comment = data.comment
-    slackUser = eval("process.env.#{issue_comment.user.login}")
+    assignee = data.issue.assignee
+    targetSlackUser = eval("process.env.#{assignee.login}")
+    sourceSlackUser = eval("process.env.#{issue_comment.user.login}")
     switch action
       when 'created'
-        message = "@#{slackUser}さんが #{issue_comment.body}って言ってますよ"
-      when 'deleted'
-        message = "@#{slackUser}さんが #{issue_comment.body}を取り消したよ"
+        message = "@#{targetSlackUser} #{issue_comment.body} by #{sourceSlackUser}"
       else
         message = ""
     return message
