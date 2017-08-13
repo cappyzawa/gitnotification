@@ -8,8 +8,8 @@ module.exports = (robot) ->
         message = postPullRequest data
       when 'pull_request_review'
         message = postPullRequestReview data
-      when 'pull_request_comment'
-        message = postPullRequestComment data
+      when 'pull_request_review_comment'
+        message = postPullRequestReviewComment data
 
     robot.send {room: "#pullrequests"}, message
     res.end ""
@@ -33,7 +33,7 @@ module.exports = (robot) ->
         message = "@#{slackUser} <#{pullRequest.html_url}|#{pullRequest.title} ##{pullRequest.number}>のレビューが取り消されました"
     return message
 
-  postPullRequestComment = (data) ->
+  postPullRequestReviewComment = (data) ->
     action = data.action
     comment = data.comment
     pullRequest = data.pull_request
