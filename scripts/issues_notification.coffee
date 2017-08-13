@@ -23,7 +23,6 @@ module.exports = (robot) ->
       when 'opened'
         color = "#c8ff00"
         word = "を作成しました"
-        console.log("before call function")
       when 'closed'
         color = "#dc4000"
         word = "をクローズしました"
@@ -32,7 +31,6 @@ module.exports = (robot) ->
         word = "を再開しました"
       when 'assigned'
         slackUser = eval("process.env.#{assignee.login}")
-        console.log "slackUser: #{slackUser}"
         color = "#0000ff"
         word = "の担当になりました"
       when 'unassigned'
@@ -41,7 +39,7 @@ module.exports = (robot) ->
         word ="の担当ではなくなりました"
       else
         return
-    message = makeAttachments data, slackUser, color, word, "issue"
+    makeAttachments data, slackUser, color, word, "issue"
     return
 
   postIssueComment = (data) ->
@@ -49,35 +47,41 @@ module.exports = (robot) ->
     issue_comment = data.comment
     assignee = data.issue.assignee
     targetSlackUser = eval("process.env.#{assignee.login}")
+    console.log "target: #{targetSlackUser}"
     sourceSlackUser = eval("process.env.#{issue_comment.user.login}")
-    console.log("target: #{targetSlackUser}, soure: #{sourceSlackUser}")
+    console.log "source: #{sourceSlackUser}"
     switch action
       when 'created'
         if targetSlackUser != sourceSlackUser
+          console.log "ifはいった"
           color = "#c864c8"
           word = "コメントがあります"
-          message = makeAttachments data, targetSlackUser, color, word, "comment"
+          makeAttachments data, targetSlackUser, color, word, "comment"
         else
           console.log "else"
           return
       else
         return
     return
-  
+
   makeAttachments = (data, slackUser, color, word, type) ->
-    console.log "assignee.key: #{Object.keys(data.issue.assignee)}"
-    assignee = eval("process.env.#{data.issue.assignee.login}")
+    assigneeList = []
+    for assigneeBody in data.issue.assignees
+      assignee = eval("process.env.#{assigneeBody.login}")
+      assignee = "@#{assignee}"
+      assigneeList.push(assignee)
+    assigneeStrForNotification = assigneeList.join ', '
+    assigneeStrForDisplay = assigneeList.join '\n'
     register = eval("process.env.#{data.sender.login}")
-    console.log "assignee: #{assignee}"
     pretext = ""
     text = ""
-    sourceSlackUser = ""
     if type is 'issue'
-      pretext = "@#{slackUser}が issue##{data.issue.number} #{word}"
+      pretext = "#{slackUser}が issue##{data.issue.number} #{word}"
       text = "#{data.issue.body}"
     else if type is 'comment'
-      pretext = "#{register}から@#{slackUser}に#{word}"
+      pretext = "#{register}から#{assigneeStrForNotification}に#{word}"
       text = "#{data.comment.body}"
+
     message = {
       "attachments": [
         {
@@ -95,7 +99,7 @@ module.exports = (robot) ->
             },
             {
               "title": "assignee",
-              "value": "#{assignee}"
+              "value": "#{assigneeStrForDisplay}"
               "short": true
             }
           ],
@@ -106,6 +110,5 @@ module.exports = (robot) ->
         }
       ]
     }
-    console.log message
-    robot.send {room: "#issues"}, message
 
+    robot.send {room: "#issues"}, message
