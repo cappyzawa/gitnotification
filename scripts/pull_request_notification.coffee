@@ -44,3 +44,6 @@ module.exports = (robot) ->
         sourceSlackUser = eval("process.env.#{comment.user.login}")
         message = "@#{targetSlackUser} #{comment.body} in <#{pullRequest.html_url}|#{pullRequest.title} ##{pullRequest.number}> by #{sourceSlackUser}"
     return message
+
+  postPullRequestReview = (data) ->
+    return data.action
