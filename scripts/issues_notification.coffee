@@ -15,6 +15,7 @@ module.exports = (robot) ->
   postIssue = (data) ->
     action = data.action
     issue = data.issue
+    assignee = data.assignee
     switch action
       when 'opened'
         slackUser = eval("process.env.#{issue.user.login}")
@@ -26,10 +27,10 @@ module.exports = (robot) ->
         slackUser = eval("process.env.#{issue.user.login}")
         message = "#{slackUser}さんが <#{issue.html_url}|#{issue.title} \##{issue.number}>を再開しました"
       when 'assigned'
-        slackUser = eval("process.env.#{issue.assignee.login}")
+        slackUser = eval("process.env.#{assignee.login}")
         message = "@#{slackUser} <#{issue.html_url}|#{issue.title} #{issue.number}>の担当になりました"
       when 'unassigned'
-        slackUser = eval("process.env.#{issue.assignee.login}")
+        slackUser = eval("process.env.#{assignee.login}")
         message = "@#{slackUser} <#{issue.html_url}|#{issue.title} \##{issue.number}>の担当ではなくなりました"
     return message
 
