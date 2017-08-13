@@ -16,14 +16,20 @@ module.exports = (robot) ->
 
   postPullRequest = (data) ->
     action = data.action
+    pullRequest = data.pull_request
+    reviewer = data.requested_reviewer
     switch action
       when 'opened'
-        message = "opened"
+        slackUser = eval("process.env.#{pullRequest.user.login}")
+        message = "#{slackUser}さんが <#{pullRequest.html_url}|#{pullRequest.title} \##{pullRequest.number}>を作成しました"
       when 'closed'
-        message = "closed"
+        slackUser = eval("process.env.#{pullRequest.user.login}")
+        message = "#{slackUser}さんが <#{pullRequest.html_url}|#{pullRequest.title} \##{pullRequest.number}>を終了しました"
       when 'review_requested'
-        message = "review_requested"
+        slackUser = eval("process.env.#{reviewer.login}")
+        message = "@#{slackUser} <#{pullRequest.html_url}|#{pullRequest.title} ##{pullRequest.number}>のレビューを依頼されました"
       when 'review_request_removed'
-        message = "review_request_removed"
+        slackUser = eval("process.env.#{reviewer.login}")
+        message = "@#{slackUser} <#{pullRequest.html_url}|#{pullRequest.title} ##{pullRequest.number}>のレビューが取り消されました"
     return message
 
