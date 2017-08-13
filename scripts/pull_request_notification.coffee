@@ -11,7 +11,7 @@ module.exports = (robot) ->
 #      when 'pull_request_comment'
 #        message = postPullRequestComment data
 
-    robot.send {room: "#issues"}, message
+    robot.send {room: "#pullrequests"}, message
     res.end ""
 
   postPullRequest = (data) ->
