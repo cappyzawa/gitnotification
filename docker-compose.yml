@@ -1,0 +1,16 @@
+gibot:
+  build: .
+  restart: always
+  env_file: my.docker.env
+  links:
+    - redis
+  environment:
+    REDIS_URL: redis://redis:6379
+  ports:
+    - 8090:8080
+  volumes:
+    - ./scripts:/gibot/scripts
+    - ./bin:/gibot/bin
+redis:
+  image: redis
+

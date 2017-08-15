@@ -4,3 +4,5 @@ node_modules
 .idea/
 gitnotification.iml
 samples/
+my.docker.env
+redis/
