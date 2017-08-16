@@ -5,13 +5,12 @@ module.exports = (robot) ->
 
     switch event_type
       when 'pull_request'
-        message = postPullRequest data
-      when 'pull_request_review_comment'
-        message = postPullRequestReviewComment data
+        postPullRequest data
+      when 'pull_request_review'
+        postPullRequestReviewComment data
       else
-        message = ""
+        return
 
-    robot.send {room: "#pullrequests"}, message
     res.end ""
 
   postPullRequest = (data) ->
@@ -21,31 +20,96 @@ module.exports = (robot) ->
     switch action
       when 'opened'
         slackUser = eval("process.env.#{pullRequest.user.login}")
+        color = "#c8ff00"
+        word = "を作成しました"
         message = "#{slackUser}さんが <#{pullRequest.html_url}|#{pullRequest.title} \##{pullRequest.number}>を作成しました"
+        makeAttachments data, slackUser, color, word, "pull_request"
       when 'closed'
         slackUser = eval("process.env.#{pullRequest.user.login}")
-        message = "#{slackUser}さんが <#{pullRequest.html_url}|#{pullRequest.title} \##{pullRequest.number}>を終了しました"
+        color = "#dc4000"
+        word = "をクローズしました"
+        makeAttachments data, slackUser, color, word, "pull_request"
       when 'review_requested'
         slackUser = eval("process.env.#{reviewer.login}")
-        message = "@#{slackUser} <#{pullRequest.html_url}|#{pullRequest.title} ##{pullRequest.number}>のレビューを依頼されました"
+        color = "#0000ff"
+        word = "にレビュー依頼があります"
+        makeAttachments data, slackUser, color, word, "review_request"
       when 'review_request_removed'
         slackUser = eval("process.env.#{reviewer.login}")
-        message = "@#{slackUser} <#{pullRequest.html_url}|#{pullRequest.title} ##{pullRequest.number}>のレビューが取り消されました"
+        color = "#d2d2d3"
+        word = "へのレビュー依頼が取り消されました"
+        makeAttachments data, slackUser, color, word, "review_request"
       else
-        message = ""
-
-    return message
+        return
+    return
 
   postPullRequestReviewComment = (data) ->
     action = data.action
-    comment = data.comment
+    comment = data.review
     pullRequest = data.pull_request
     assignee = pullRequest.assignee
     switch action
-      when 'created'
+      when 'submitted'
         targetSlackUser = eval("process.env.#{assignee.login}")
         sourceSlackUser = eval("process.env.#{comment.user.login}")
-        message = "@#{targetSlackUser} #{comment.body} in <#{pullRequest.html_url}|#{pullRequest.title} ##{pullRequest.number}> by #{sourceSlackUser}"
+        color = "#34adc6"
+        word = "にコメントがあります"
+        makeAttachments data, targetSlackUser, color, word, "comment"
       else
-        message = ""
-    return message
+        return
+    return
+
+  makeAttachments = (data, slackUser, color, word, type) ->
+    reviewersList = []
+    for reviewerBody in data.pull_request.requested_reviewers
+      reviewer = eval("process.env.#{reviewerBody.login}")
+      reviewer = "@#{reviewer}"
+      reviewersList.push(reviewer)
+    reviewerStrForNotification = reviewersList.join ', '
+    reviewerStrForDisplay = reviewersList.join '\n'
+    register = eval("process.env.#{data.sender.login}")
+    pretext = ""
+    text = ""
+    if type is 'pull_request'
+      pretext = "#{slackUser}が *【Pull Request】* #{word}"
+      text = "#{data.pull_request.body}"
+    else if type is 'review_request'
+      pretext = "#{register}から#{reviewerStrForNotification}に#{word}"
+      text = "#{data.pull_request.body}"
+    else if type is "comment"
+      pretext = "#{register}から#{slackUser}#{word}"
+      text = "#{data.review.body}"
+      register = "@#{register}"
+
+    message = {
+      "attachments": [
+        {
+          "fallback": "Required plain-text summary of the attachment.",
+          "color": "#{color}",
+          "pretext": "#{pretext}",
+          "title": "#{data.pull_request.title}",
+          "title_link": "#{data.pull_request.html_url}",
+          "mrkdwn": true,
+          "text": "#{text}",
+          "mrkdwn_in": ["pretext", "text"],
+          "fields": [
+            {
+              "title": "assignee",
+              "value": "#{register}",
+              "short": true
+            },
+            {
+              "title": "reviewer",
+              "value": "#{reviewerStrForDisplay}"
+              "short": true
+            }
+          ],
+          "thumb_url": "#{data.sender.avatar_url}",
+          "footer": "Github",
+          "footer_icon": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7G9JTqB8z1AVU-Lq7xLy1fQ3RMO-Tt6PRplyhaw75XCAnYvAYxg",
+          "ts": data.pull_request.created_at
+        }
+      ]
+    }
+
+    robot.send {room: "#pullrequests"}, message
