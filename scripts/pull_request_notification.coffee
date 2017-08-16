@@ -84,7 +84,7 @@ module.exports = (robot) ->
     message = {
       "attachments": [
         {
-          "fallback": "Required plain-text summary of the attachment.",
+          "fallback": "#{pretext}",
           "color": "#{color}",
           "pretext": "#{pretext}",
           "title": "#{data.pull_request.title}",

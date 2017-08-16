@@ -41,9 +41,9 @@ module.exports = (robot) ->
         message = {
           "attachments": [
             {
-              "fallback": "Required plain-text summary of the attachment.",
+              "fallback": "#{login_name}が【#{column_name}】#{pretext}",
               "color": "#{color}",
-              "pretext": "@#{login_name}が 【#{column_name}】 #{pretext}",
+              "pretext": "@#{login_name}が【#{column_name}】#{pretext}",
               "author_name": "#{login_name}",
               "title": "#{data.action} card",
               "title_link": "#{data.repository.html_url}/projects/",
