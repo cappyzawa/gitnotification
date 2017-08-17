@@ -47,18 +47,14 @@ module.exports = (robot) ->
     issue_comment = data.comment
     assignee = data.issue.assignee
     targetSlackUser = eval("process.env.#{assignee.login}")
-    console.log "target: #{targetSlackUser}"
     sourceSlackUser = eval("process.env.#{issue_comment.user.login}")
-    console.log "source: #{sourceSlackUser}"
     switch action
       when 'created'
         if targetSlackUser != sourceSlackUser
-          console.log "ifはいった"
           color = "#c864c8"
           word = "コメントがあります"
           makeAttachments data, targetSlackUser, color, word, "comment"
         else
-          console.log "else"
           return
       else
         return
