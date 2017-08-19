@@ -1,3 +1,5 @@
+parsedUser = require('./user_parser').parsedUser
+
 module.exports = (robot) ->
   robot.router.post '/github/webhook/issues', (req, res) ->
     event_type = req.get 'X-Github-Event'
@@ -16,7 +18,8 @@ module.exports = (robot) ->
     action = data.action
     issue = data.issue
     assignee = data.issue.assignee
-    slackUser = eval("process.env.#{issue.user.login}")
+    slackUser = eval("process.env.#{parsedUser issue.user.login}")
+    console.log "replace: #{slackUser}"
     color=""
     word=""
     switch action
@@ -30,11 +33,11 @@ module.exports = (robot) ->
         color = "#96ffdc"
         word = "を再開しました"
       when 'assigned'
-        slackUser = eval("process.env.#{assignee.login}")
+        slackUser = eval("process.env.#{parsedUser assignee.login}")
         color = "#0000ff"
         word = "の担当になりました"
       when 'unassigned'
-        slackUser = eval("process.env.#{assignee.login}")
+        slackUser = eval("process.env.#{parsedUser assignee.login}")
         color = "#d2d2d3"
         word ="の担当ではなくなりました"
       else
@@ -46,8 +49,8 @@ module.exports = (robot) ->
     action = data.action
     issue_comment = data.comment
     assignee = data.issue.assignee
-    targetSlackUser = eval("process.env.#{assignee.login}")
-    sourceSlackUser = eval("process.env.#{issue_comment.user.login}")
+    targetSlackUser = eval("process.env.#{parsedUser assignee.login}")
+    sourceSlackUser = eval("process.env.#{parsedUser issue_comment.user.login}")
     switch action
       when 'created'
         if targetSlackUser != sourceSlackUser
@@ -63,12 +66,12 @@ module.exports = (robot) ->
   makeAttachments = (data, slackUser, color, word, type) ->
     assigneeList = []
     for assigneeBody in data.issue.assignees
-      assignee = eval("process.env.#{assigneeBody.login}")
+      assignee = eval("process.env.#{parsedUser assigneeBody.login}")
       assignee = "@#{assignee}"
       assigneeList.push(assignee)
     assigneeStrForNotification = assigneeList.join ', '
     assigneeStrForDisplay = assigneeList.join '\n'
-    register = eval("process.env.#{data.sender.login}")
+    register = eval("process.env.#{parsedUser data.sender.login}")
     pretext = ""
     text = ""
     if type is 'issue'
