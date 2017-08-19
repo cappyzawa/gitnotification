@@ -46,7 +46,6 @@ module.exports = (robot) ->
 
   postPullRequestReviewComment = (data) ->
     action = data.action
-    comment = data.review
     pullRequest = data.pull_request
     assignee = pullRequest.assignee
     switch action
