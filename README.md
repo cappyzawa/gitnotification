@@ -3,6 +3,13 @@
 slackとgithubのユーザ名の差を吸収して、githubのeventをslackに通知してくれるhubot
 heroku、docker上で動作を確認した
 
+検知できるイベント
+- [x] Issues
+- [x] Issues Comment
+- [x] Projedt Card
+- [x] Pull Request
+- [x] Pull Request Review
+
 ## install
 
 ### リポジトリをcloneする
