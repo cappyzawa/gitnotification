@@ -17,17 +17,17 @@ $ git clone https://github.com/kutsuzawa/gitnotification.git
 
 
 ### githubのweb hooksを設定
-それぞれのpayloadの設定
-* project に関する通知 : http://yourhost/github/webhook/projects
-* issue に関する通知 : http://yourhost/github/webhook/issues
-* pull request に関する記述 : http://yourhost/github/webhook/pullrequests
+payloadの設定
+http://yourhost:8090/github/webhook
 
-*dockerで立てた場合portは8090番*
+8090は固定になっています。
 
 
 ## heroku
 ### 環境変数の設定
 `export_heroku_env.sh`に環境変数を記述
+
+`HEROKU_URL`: herokuを立ち上げたとき発行されるURL
 
 `HUBOT_SLACK_TOKEN`: hubotのアクセスを許可したslackのtoken
 
@@ -55,7 +55,7 @@ $ cp docker.env my.docker.env
 
 ***my.docker.envという名前でないと動作しません***
 
-あとはherokuの場合と同様に環境変数を記述していく
+あとはherokuの場合と同様に環境変数を記述していく.
 
 ### 起動
 `docker-compose`を使用
