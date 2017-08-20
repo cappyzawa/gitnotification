@@ -1,4 +1,4 @@
-parsedUser = require('./user_parser').parsedUser
+userParser = require('./user_parser').userParser
 
 module.exports = (robot) ->
   robot.router.post '/github/webhook/pullrequests', (req, res) ->
@@ -21,22 +21,22 @@ module.exports = (robot) ->
     reviewer = data.requested_reviewer
     switch action
       when 'opened'
-        slackUser = eval("process.env.#{parsedUser pullRequest.user.login}")
+        slackUser = eval("process.env.#{userParser pullRequest.user.login}")
         color = "#c8ff00"
         word = "を作成しました"
         makeAttachments data, slackUser, color, word, "pull_request"
       when 'closed'
-        slackUser = eval("process.env.#{parsedUser pullRequest.user.login}")
+        slackUser = eval("process.env.#{userParser pullRequest.user.login}")
         color = "#dc4000"
         word = "をクローズしました"
         makeAttachments data, slackUser, color, word, "pull_request"
       when 'review_requested'
-        slackUser = eval("process.env.#{parsedUser reviewer.login}")
+        slackUser = eval("process.env.#{userParser reviewer.login}")
         color = "#0000ff"
         word = "にレビュー依頼があります"
         makeAttachments data, slackUser, color, word, "review_request"
       when 'review_request_removed'
-        slackUser = eval("process.env.#{parsedUser reviewer.login}")
+        slackUser = eval("process.env.#{userParser reviewer.login}")
         color = "#d2d2d3"
         word = "へのレビュー依頼が取り消されました"
         makeAttachments data, slackUser, color, word, "review_request"

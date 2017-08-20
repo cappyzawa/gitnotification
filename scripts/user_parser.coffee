@@ -1,2 +1,2 @@
-module.exports = parsedUser: (login) ->
+module.exports = userParser: (login) ->
   login.replace /-/g, "_"
