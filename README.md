@@ -25,9 +25,9 @@ $ git clone https://github.com/kutsuzawa/gitnotification.git
 
 ### githubのweb hooksを設定
 payloadの設定
-http://yourhost:8090/github/webhook
+http://yourhost/github/webhook
 
-8090は固定になっています。
+dockerの場合は8090は固定になっています。
 
 
 ## heroku
