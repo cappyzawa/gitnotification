@@ -10,7 +10,7 @@ module.exports = (robot) ->
       when /^pull_request.*/.test(event_type)
         payload = "pullrequests"
         routingPostData req, payload
-      when /^puroject.*/.test(event_type)
+      when /^project.*/.test(event_type)
         payload = "projects"
         routingPostData req, payload
       else

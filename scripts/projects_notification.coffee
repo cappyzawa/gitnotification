@@ -1,4 +1,4 @@
-parsedUser = require('./user_parser').parsedUser
+userParser = require('./user_parser').userParser
 
 module.exports = (robot) ->
   robot.router.post '/github/webhook/projects', (req, res) ->
@@ -17,8 +17,8 @@ module.exports = (robot) ->
     action = data.action
     sender = data.sender
     cmd = ""
-    if eval("process.env.#{parsedUser sender.login}")?
-      cmd = "process.env.#{parsedUser sender.login}"
+    if eval("process.env.#{userParser sender.login}")?
+      cmd = "process.env.#{userParser sender.login}"
     login_name = eval(cmd)
     switch action
       when 'created', 'deleted'
