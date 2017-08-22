@@ -61,12 +61,12 @@ module.exports = (robot) ->
   makeAttachments = (data, slackUser, color, word, type) ->
     reviewersList = []
     for reviewerBody in data.pull_request.requested_reviewers
-      reviewer = eval("process.env.#{reviewerBody.login}")
+      reviewer = eval("process.env.#{userParser reviewerBody.login}")
       reviewer = "@#{reviewer}"
       reviewersList.push(reviewer)
     reviewerStrForNotification = reviewersList.join ', '
     reviewerStrForDisplay = reviewersList.join '\n'
-    register = eval("process.env.#{data.sender.login}")
+    register = eval("process.env.#{userParser data.sender.login}")
     pretext = ""
     text = ""
     if type is 'pull_request'
