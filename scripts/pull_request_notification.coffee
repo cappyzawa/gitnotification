@@ -20,11 +20,6 @@ module.exports = (robot) ->
     pullRequest = data.pull_request
     reviewer = data.requested_reviewer
     switch action
-      when 'opened'
-        slackUser = eval("process.env.#{userParser pullRequest.user.login}")
-        color = "#c8ff00"
-        word = "を作成しました"
-        makeAttachments data, slackUser, color, word, "pull_request"
       when 'closed'
         slackUser = eval("process.env.#{userParser pullRequest.user.login}")
         color = "#dc4000"
