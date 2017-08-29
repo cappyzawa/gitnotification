@@ -23,15 +23,9 @@ module.exports = (robot) ->
     color=""
     word=""
     switch action
-      when 'opened'
-        color = "#c8ff00"
-        word = "を作成しました"
       when 'closed'
         color = "#dc4000"
         word = "をクローズしました"
-      when 'reopened'
-        color = "#96ffdc"
-        word = "を再開しました"
       when 'assigned'
         slackUser = eval("process.env.#{userParser assignee.login}")
         color = "#0000ff"
